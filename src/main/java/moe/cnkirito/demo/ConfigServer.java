@@ -44,15 +44,20 @@ public class ConfigServer {
         }
     }
 
-    // guava 提供的多值 Map，一个 key 可以对应多个 value
-    private volatile Multimap<String, AsyncTask> dataIdContext = Multimaps.synchronizedSetMultimap(HashMultimap
-        .create());
+    /**
+     * guava 提供的多值 Map，一个 key 可以对应多个 value
+     */
+    private volatile Multimap<String, AsyncTask> dataIdContext = Multimaps.synchronizedSetMultimap(HashMultimap.create());
 
     private ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("longPolling-timeout-checker-%d")
-        .build();
+            .build();
     private ScheduledExecutorService timeoutChecker = new ScheduledThreadPoolExecutor(1, threadFactory);
 
-    // ① 监听接入点
+    /**
+     * ① 监听接入点
+     * @param request
+     * @param response
+     */
     @RequestMapping("/listener")
     public void addListener(HttpServletRequest request, HttpServletResponse response) {
 
@@ -73,7 +78,12 @@ public class ConfigServer {
         }, 30000, TimeUnit.MILLISECONDS);
     }
 
-    // ④ 配置发布接入点
+    /**
+     * ④ 配置发布接入点
+     * @param dataId
+     * @param configInfo
+     * @return
+     */
     @RequestMapping("/publishConfig")
     @SneakyThrows
     public String publishConfig(String dataId, String configInfo) {
@@ -82,7 +92,7 @@ public class ConfigServer {
 
         for (AsyncTask asyncTask : asyncTasks) {
             asyncTask.setTimeout(false);
-            HttpServletResponse response = (HttpServletResponse)asyncTask.getAsyncContext().getResponse();
+            HttpServletResponse response = (HttpServletResponse) asyncTask.getAsyncContext().getResponse();
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().println(configInfo);
             asyncTask.getAsyncContext().complete();

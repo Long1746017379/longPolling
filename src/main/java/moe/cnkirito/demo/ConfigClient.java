@@ -38,7 +38,7 @@ public class ConfigClient {
         switch (response.getStatusLine().getStatusCode()) {
             case 200: {
                 BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity()
-                    .getContent()));
+                        .getContent()));
                 StringBuilder result = new StringBuilder();
                 String line;
                 while ((line = rd.readLine()) != null) {
@@ -65,7 +65,7 @@ public class ConfigClient {
 
     public static void main(String[] args) {
         // httpClient 会打印很多 debug 日志，关闭掉
-        Logger logger = (Logger)LoggerFactory.getLogger("org.apache.http");
+        Logger logger = (Logger) LoggerFactory.getLogger("org.apache.http");
         logger.setLevel(Level.INFO);
         logger.setAdditive(false);
 
